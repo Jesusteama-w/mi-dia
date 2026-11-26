@@ -1,0 +1,10 @@
+{
+  "name": "Jesus · mi día",
+  "short_name": "Mi día",
+  "start_url": "./",
+  "display": "fullscreen",
+  "background_color": "#f7f4ee",
+  "theme_color": "#141414",
+  "lang": "es-AR",
+  "icons": [{ "src": "assets/logo-completo.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

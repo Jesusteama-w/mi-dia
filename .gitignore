@@ -1,0 +1,15 @@
+# Solo se publica el código de la app. Todo lo personal queda fuera del repo.
+privado/
+01-bocetos/
+02-logo/
+03-estilo/
+contenido como referencia para la intro/
+prompt.txt
+*.zip
+.env
+.env.*
+node_modules/
+escritorio/dist/
+escritorio/out/
+.claude/
+__pycache__/
