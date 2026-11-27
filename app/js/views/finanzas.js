@@ -52,7 +52,7 @@ export default {
             <form class="card addf fn-form"><h3>Anotar un gasto</h3>
               <input class="input" name="amount" type="number" min="1" step="1" inputmode="numeric" placeholder="Monto en pesos" required aria-label="Monto">
               <div class="fn-chips" role="radiogroup" aria-label="Categoría">${cats.map(c =>
-                `<button type="button" class="chip${c.id === selCat ? ' on' : ''}" data-chip="${c.id}" role="radio" aria-checked="${c.id === selCat}"><i class="dot" style="--c:${c.color}"></i>${esc(c.name)}</button>`).join('')}</div>
+                `<button type="button" class="chip${c.id === selCat ? ' on' : ''}" data-chip="${c.id}" role="radio" aria-checked="${c.id === selCat}"><i class="dot" style="--c:${c.color}"></i>${esc(c.name)}</button>`).join('')}${ui.addChip('fn')}</div>
               <input class="input" name="desc" maxlength="80" placeholder="Descripción (opcional)" aria-label="Descripción">
               <input class="input" name="date" type="date" value="${today}" required aria-label="Fecha">
               <button class="btn" type="submit">Agregar gasto</button></form>
@@ -99,6 +99,8 @@ export default {
     root.onfocusout = () => { if (hl) { hl = null; applyHl(); } };
 
     root.onclick = e => {
+      const add = e.target.closest('[data-addcat]');
+      if (add) { ui.addChipInput(add, name => { const id = ui.uid('c'); selCat = id; store.set(s => s.finanzas.cats.push({ id, name, color: ui.colorLibre(s.finanzas.cats.map(c => c.color)) })); }); return; }
       const nav = e.target.closest('[data-nav]'), chip = e.target.closest('[data-chip]'), del = e.target.closest('[data-del]'),
         dc = e.target.closest('[data-delcat]'), col = e.target.closest('[data-color]');
       if (nav) { const d = new Date(ym.y, ym.m + +nav.dataset.nav, 1); ym = { y: d.getFullYear(), m: d.getMonth() }; hl = null; draw(); }

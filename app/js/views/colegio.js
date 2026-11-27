@@ -25,9 +25,9 @@ export default {
             : '<p class="muted">No hay nada anotado para mañana.</p>'}</div>
         <form class="card addf co-form"><h3>Anotar algo</h3>
           <span class="label">Qué es</span>
-          <div class="co-chips" role="radiogroup" aria-label="Categoría">${co.cats.map(c => `<button type="button" class="chip${c === selCat ? ' on' : ''}" data-cat="${esc(c)}" role="radio" aria-checked="${c === selCat}">${esc(c)}</button>`).join('')}</div>
+          <div class="co-chips" role="radiogroup" aria-label="Categoría">${co.cats.map(c => `<button type="button" class="chip${c === selCat ? ' on' : ''}" data-cat="${esc(c)}" role="radio" aria-checked="${c === selCat}">${esc(c)}</button>`).join('')}${ui.addChip('cocat')}</div>
           <span class="label">De qué materia</span>
-          <div class="co-chips" role="radiogroup" aria-label="Materia">${co.materias.map(m => `<button type="button" class="chip${m === selMat ? ' on' : ''}" data-mat="${esc(m)}" role="radio" aria-checked="${m === selMat}">${esc(m)}</button>`).join('') || '<span class="muted small">Agregá una materia abajo.</span>'}</div>
+          <div class="co-chips" role="radiogroup" aria-label="Materia">${co.materias.map(m => `<button type="button" class="chip${m === selMat ? ' on' : ''}" data-mat="${esc(m)}" role="radio" aria-checked="${m === selMat}">${esc(m)}</button>`).join('')}${ui.addChip('comat', 'Materia')}</div>
           <div class="co-row"><input class="input" name="text" maxlength="120" placeholder="Qué tenés que hacer o llevar" required aria-label="Texto">
           <input class="input" name="date" type="date" aria-label="Fecha (opcional)"></div>
           <button class="btn" type="submit">Agregar</button></form>
@@ -53,6 +53,8 @@ export default {
     const setOn = (sel, el, attr) => root.querySelectorAll(sel).forEach(c => { const on = c === el; c.classList.toggle('on', on); c.setAttribute('aria-checked', on); });
 
     root.onclick = e => {
+      const add = e.target.closest('[data-addcat]');
+      if (add) { ui.addChipInput(add, name => { if (add.dataset.addcat === 'comat') { selMat = name; store.set(s => { if (!s.colegio.materias.includes(name)) s.colegio.materias.push(name); }); } else { selCat = name; store.set(s => { if (!s.colegio.cats.includes(name)) s.colegio.cats.push(name); }); } }); return; }
       const cat = e.target.closest('[data-cat]'), mat = e.target.closest('[data-mat]'), del = e.target.closest('[data-del]'),
         dm = e.target.closest('[data-delmat]'), dc = e.target.closest('[data-delcat]'), task = e.target.closest('.task');
       if (cat) { selCat = cat.dataset.cat; setOn('.co-form [data-cat]', cat); }

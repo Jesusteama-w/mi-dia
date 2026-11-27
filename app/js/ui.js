@@ -85,3 +85,36 @@ export async function logoSvg({ icon = false } = {}) {
   return logoSrc.replace(/<g transform="matrix\(1, 0, 0, 1, 251, 333\)">[\s\S]*<\/svg>/, '</svg>')
                 .replace(/viewBox="[^"]*"/, 'viewBox="60 150 380 450"');
 }
+
+// ---------- categorías nuevas con un botón ----------
+export const PALETA = ['#c4862a', '#5b5346', '#7a6a55', '#8d988d', '#b9a98a', '#4f4a40', '#a35f2a', '#6f7f95', '#9a6b8a', '#5f8a6a', '#b0704f', '#3f6f78'];
+/** Primer color de la paleta que todavía no se usa. */
+export const colorLibre = usados => PALETA.find(c => !usados.includes(c)) || PALETA[usados.length % PALETA.length];
+
+/** Categorías de eventos: las fijas + las que agregaste vos (state.eventCats). */
+export function evCats(s) {
+  const out = { ...CATS };
+  (s.eventCats || []).forEach(c => { out[c.id] = { name: c.name, c: c.color }; });
+  return out;
+}
+
+/** Botón "+ Nueva" que va al final de una fila de chips. */
+export const addChip = (kind, txt = 'Nueva') => `<button type="button" class="chip chip-add" data-addcat="${kind}" aria-label="Agregar ${txt.toLowerCase()}">+ ${txt}</button>`;
+
+/** Convierte el botón "+ Nueva" en un campito para escribir el nombre. Enter agrega, Esc cancela. */
+export function addChipInput(btn, onAdd) {
+  const w = document.createElement('span');
+  w.className = 'chip chip-new';
+  w.innerHTML = `<input maxlength="30" placeholder="Nombre…" aria-label="Nombre nuevo" autocomplete="off"><button type="button" aria-label="Agregar">✓</button>`;
+  btn.replaceWith(w);
+  const inp = w.querySelector('input');
+  inp.focus();
+  const cancel = () => { if (w.isConnected) w.replaceWith(btn); };
+  const ok = () => { const v = inp.value.trim(); if (v) onAdd(v); else cancel(); };
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); ok(); }
+    else if (e.key === 'Escape') cancel();
+  });
+  w.querySelector('button').addEventListener('click', e => { e.stopPropagation(); ok(); });
+  inp.addEventListener('blur', () => setTimeout(() => { if (w.isConnected && !w.contains(document.activeElement) && !inp.value.trim()) cancel(); }, 200));
+}

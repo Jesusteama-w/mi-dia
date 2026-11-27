@@ -1,16 +1,16 @@
 // Vista "Mes": calendario mensual con eventos por día.
-let ym = null, sel = null;
+let ym = null, sel = null, newEv = null;
 
 export default {
   title: 'Mes',
   render(root, { store, ui }) {
-    const { esc, iso, parseIso, longDate, cap, MESES, CATS } = ui;
+    const { esc, iso, parseIso, longDate, cap, MESES } = ui;
     const today = iso(new Date());
     if (!ym) { const n = new Date(); ym = { y: n.getFullYear(), m: n.getMonth() }; }
     if (!sel) sel = today;
 
     const draw = () => {
-      const events = store.get().events;
+      const events = store.get().events, CATS = ui.evCats(store.get());
       const by = {};
       events.forEach(e => (by[e.date] ??= []).push(e));
       const cells = ui.monthCells(ym.y, ym.m).map(d => {
@@ -27,7 +27,7 @@ export default {
           <div class="nav-m"><button class="btn ghost" data-nav="-1" aria-label="Mes anterior">◀</button>
           <button class="btn ghost" data-nav="0">Hoy</button>
           <button class="btn ghost" data-nav="1" aria-label="Mes siguiente">▶</button></div></div>
-        <div class="legend">${Object.values(CATS).map(c => `<span><i class="dot" style="--c:${c.c}"></i>${c.name}</span>`).join('')}</div>
+        <div class="legend chips">${Object.values(CATS).map(c => `<span><i class="dot" style="--c:${c.c}"></i>${esc(c.name)}</span>`).join('')}${ui.addChip('ev')}</div>
         <div class="mes-main">
           <div class="cal"><div class="dow">${['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'].map(d => `<span class="label">${d}</span>`).join('')}</div>
             <div class="grid">${cells}</div></div>
@@ -38,13 +38,15 @@ export default {
               : '<p class="muted">Nada anotado este día.</p>'}
             <form class="addf"><span class="label">Agregar evento</span>
               <input class="input" name="title" placeholder="Título" required maxlength="80" aria-label="Título">
-              <select class="input" name="cat" aria-label="Categoría">${Object.entries(CATS).map(([k, c]) => `<option value="${k}">${c.name}</option>`).join('')}</select>
+              <select class="input" name="cat" aria-label="Categoría">${Object.entries(CATS).map(([k, c]) => `<option value="${k}"${k === newEv ? ' selected' : ''}>${esc(c.name)}</option>`).join('')}</select>
               <input class="input" name="note" placeholder="Nota (opcional)" maxlength="120" aria-label="Nota">
               <button class="btn" type="submit">Agregar</button></form>
           </aside></div></div>`;
     };
 
     root.onclick = e => {
+      const add = e.target.closest('[data-addcat]');
+      if (add) { ui.addChipInput(add, name => { const id = ui.uid('k'); newEv = id; store.set(s => { const cs = (s.eventCats ||= []); cs.push({ id, name, color: ui.colorLibre(Object.values(ui.evCats(s)).map(c => c.c)) }); }); }); return; }
       const nav = e.target.closest('[data-nav]'), cell = e.target.closest('[data-d]'), del = e.target.closest('[data-del]');
       if (nav) {
         const k = +nav.dataset.nav;

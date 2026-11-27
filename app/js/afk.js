@@ -12,7 +12,7 @@ function slideMes(s) {
   return `<h2>${ui.cap(ui.MESES[d.getMonth()])} ${d.getFullYear()}</h2>
   <div class="a-mgrid">${['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map(x => `<b>${x}</b>`).join('')}
   ${cells.map(c => { if (!c) return '<div></div>'; const k = ui.iso(c);
-    return `<div class="${k === today ? 'today' : ''}"><span>${c.getDate()}</span>${(evs[k] || []).slice(0, 2).map(e => `<em><i class="dot" style="--c:${ui.CATS[e.cat]?.c}"></i>${ui.esc(e.title)}</em>`).join('')}</div>`; }).join('')}</div>`;
+    return `<div class="${k === today ? 'today' : ''}"><span>${c.getDate()}</span>${(evs[k] || []).slice(0, 2).map(e => `<em><i class="dot" style="--c:${ui.evCats(s)[e.cat]?.c}"></i>${ui.esc(e.title)}</em>`).join('')}</div>`; }).join('')}</div>`;
 }
 function slideDia(s) {
   const m = ui.nowMin(), cur = ui.currentBlock(s.schedule, m).now;

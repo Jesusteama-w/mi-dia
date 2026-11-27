@@ -33,7 +33,7 @@ export default {
       <div class="i-bottom">
         <section class="card"><h3>Mañana tenés</h3>
           <p><span class="label">Materias</span> ${s.tomorrow.materias.map(ui.esc).join(' · ')}</p>
-          ${tmrEv.map(e => `<p><i class="dot" style="--c:${ui.CATS[e.cat]?.c}"></i> ${ui.esc(e.title)}${e.note ? ` <span class="muted">· ${ui.esc(e.note)}</span>` : ''}</p>`).join('')}
+          ${tmrEv.map(e => `<p><i class="dot" style="--c:${ui.evCats(s)[e.cat]?.c}"></i> ${ui.esc(e.title)}${e.note ? ` <span class="muted">· ${ui.esc(e.note)}</span>` : ''}</p>`).join('')}
           <p><span class="label">Llevar</span> ${s.tomorrow.llevar.map(ui.esc).join(' · ')}</p>
         </section>
         <section class="card i-note"><h3><a href="#/libreta">Libreta</a></h3>
