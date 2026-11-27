@@ -9,11 +9,14 @@ const path = require('path');
 const URL_APP = process.argv.includes('--local') ? 'http://localhost:5173/' : 'https://jesusteama-w.github.io/mi-dia/';
 const ICONO = path.join(__dirname, 'icono.png');
 
-// ---- inicio con Windows: solo si lo pedís a propósito ----
+// ---- inicio con Windows: solo si lo pedís a propósito (menú de la bandeja o npm run activar-inicio) ----
+const inicioArgs = app.isPackaged ? [] : [path.resolve(__dirname)];
+const inicioActivo = () => app.getLoginItemSettings({ path: process.execPath, args: inicioArgs }).openAtLogin;
+const setInicio = on => app.setLoginItemSettings({ openAtLogin: on, path: process.execPath, args: inicioArgs });
 if (process.argv.includes('--activar-inicio') || process.argv.includes('--desactivar-inicio')) {
   const on = process.argv.includes('--activar-inicio');
   app.whenReady().then(() => {
-    app.setLoginItemSettings({ openAtLogin: on, path: process.execPath, args: [path.resolve(__dirname)] });
+    setInicio(on);
     console.log(on ? 'Listo: Mi día se abre al prender la compu.' : 'Listo: Mi día ya no se abre al prender la compu.');
     app.quit();
   });
@@ -62,6 +65,7 @@ app.whenReady().then(() => {
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: 'Abrir Mi día', click: mostrar },
     { label: 'Recargar', click: () => win?.reload() },
+    { label: 'Abrir al prender la compu', type: 'checkbox', checked: inicioActivo(), click: item => setInicio(item.checked) },
     { type: 'separator' },
     { label: 'Salir', click: () => { saliendo = true; app.quit(); } },
   ]));

@@ -9,9 +9,39 @@
     "local": "electron . --local",
     "iconos": "electron iconos.js",
     "activar-inicio": "electron . --activar-inicio",
-    "desactivar-inicio": "electron . --desactivar-inicio"
+    "desactivar-inicio": "electron . --desactivar-inicio",
+    "instalador": "electron-builder --win nsis"
   },
   "devDependencies": {
-    "electron": "45.3.1"
+    "electron": "45.3.1",
+    "electron-builder": "26.18.1"
+  },
+  "author": "Mi día",
+  "build": {
+    "appId": "mi.dia",
+    "productName": "Mi día",
+    "copyright": "Mi día",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "icono.png",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "icono.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Mi día",
+      "artifactName": "Mi-dia-Setup-${version}.${ext}",
+      "uninstallDisplayName": "Mi día"
+    }
   }
 }
