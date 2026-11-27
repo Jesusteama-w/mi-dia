@@ -63,7 +63,7 @@ export function ejemplo() {
     v: 2,
     perfil: { nombre: '' },
     reading: 'Juan 1',
-    // Texto NVI provisorio: reemplazar por la lista de Elias.
+    // Texto NVI provisorio: reemplazar por la lista definitiva.
     verses: VERSES,
     schedule: [
       blk('07:00', '07:30', 'Despertar y orar', ['Orar', 'Tender la cama']),
