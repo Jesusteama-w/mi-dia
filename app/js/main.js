@@ -3,6 +3,7 @@ import * as ui from './ui.js';
 import { playIntro } from './intro.js';
 import { afk } from './afk.js';
 import { startFloaters } from './floaters.js';
+import { sesionGuardada, conectar, pedirLogin } from './nube.js';
 import './theme.js';
 
 const NAV = [
@@ -54,7 +55,7 @@ store.subscribe(() => { const c = current; current = null; location.hash = `#/${
 
 // ---- inactividad → pantalla de espera ----
 let idleTimer;
-function poke() { clearTimeout(idleTimer); idleTimer = setTimeout(() => { if (!document.getElementById('intro').hidden) return; afk.show(); }, IDLE_MS); }
+function poke() { clearTimeout(idleTimer); idleTimer = setTimeout(() => { if (!document.getElementById('intro').hidden || !document.getElementById('login').hidden) return; afk.show(); }, IDLE_MS); }
 ['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart', 'scroll'].forEach(ev => addEventListener(ev, poke, { passive: true }));
 
 // Paneles que se abren y cierran (recuerdan si estaban abiertos aunque la vista se redibuje)
@@ -64,13 +65,16 @@ document.addEventListener('toggle', e => { const d = e.target; if (d.dataset?.dr
 afk.onExit = () => { go('inicio'); route(); view.focus({ preventScroll: true }); poke(); };
 
 (async function start() {
+  // Si ya entraste en este dispositivo, se conecta en segundo plano mientras corre la intro.
+  const guardada = await sesionGuardada();
+  if (guardada) conectar(guardada).catch(e => console.warn('[nube]', e));
   await buildNav();
   addEventListener('hashchange', route);
   await route();
-  window.__verso = startFloaters(store, { canShow: () => !afk.visible && document.getElementById('intro').hidden }).pop;
+  window.__verso = startFloaters(store, { canShow: () => !afk.visible && document.getElementById('intro').hidden && document.getElementById('login').hidden }).pop;
   const params = new URLSearchParams(location.search);
-  if (params.has('sinintro')) { afk.show(); return; }
-  await playIntro();
+  if (!params.has('sinintro')) await playIntro();
+  if (!guardada) await conectar(await pedirLogin());
   afk.show();
   poke();
 })();
