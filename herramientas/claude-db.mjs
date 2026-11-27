@@ -11,7 +11,7 @@
 //   node herramientas/claude-db.mjs gasto MONTO "detalle" [cat] [AAAA-MM-DD]
 //   node herramientas/claude-db.mjs colegio "Categoría" "Materia" "texto" [AAAA-MM-DD]
 //   node herramientas/claude-db.mjs poner clave archivo.json          → reemplaza una sección entera
-//   node herramientas/claude-db.mjs cargar-semilla [archivo.json]     → carga todas las secciones (por defecto privado/semilla-elias.json)
+//   node herramientas/claude-db.mjs cargar-semilla [archivo.json]     → carga todas las secciones (por defecto privado/semilla.json)
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -104,7 +104,7 @@ switch (cmd) {
     console.log(`Sección "${a[0]}" reemplazada.`);
     break;
   case 'cargar-semilla': {
-    const archivo = a[0] || path.join(RAIZ, 'privado', 'semilla-elias.json');
+    const archivo = a[0] || path.join(RAIZ, 'privado', 'semilla.json');
     const datos = JSON.parse(readFileSync(archivo, 'utf8'));
     await poner(uid, Object.entries(datos));
     console.log(`Cargadas ${Object.keys(datos).length} secciones.`);
