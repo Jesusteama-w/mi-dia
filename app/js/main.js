@@ -4,6 +4,7 @@ import { playIntro } from './intro.js';
 import { afk } from './afk.js';
 import { startFloaters } from './floaters.js';
 import { sesionGuardada, conectar, pedirLogin } from './nube.js';
+import { startAvisos } from './avisos.js';
 import './theme.js';
 
 const NAV = [
@@ -64,6 +65,9 @@ document.addEventListener('toggle', e => { const d = e.target; if (d.dataset?.dr
 
 afk.onExit = () => { go('inicio'); route(); view.focus({ preventScroll: true }); poke(); };
 
+// Instalable en el celu (y anda sin internet con lo último que se guardó). En la compu local no hace falta.
+if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+
 (async function start() {
   // Si ya entraste en este dispositivo, se conecta en segundo plano mientras corre la intro.
   const guardada = await sesionGuardada();
@@ -75,6 +79,7 @@ afk.onExit = () => { go('inicio'); route(); view.focus({ preventScroll: true });
   const params = new URLSearchParams(location.search);
   if (!params.has('sinintro')) await playIntro();
   if (!guardada) await conectar(await pedirLogin());
+  startAvisos(store);
   afk.show();
   poke();
 })();

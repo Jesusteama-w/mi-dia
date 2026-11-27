@@ -1,0 +1,17 @@
+{
+  "name": "mi-dia-escritorio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Mi día en pantalla completa en la compu (y en la tele por HDMI).",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "local": "electron . --local",
+    "iconos": "electron iconos.js",
+    "activar-inicio": "electron . --activar-inicio",
+    "desactivar-inicio": "electron . --desactivar-inicio"
+  },
+  "devDependencies": {
+    "electron": "45.3.1"
+  }
+}
